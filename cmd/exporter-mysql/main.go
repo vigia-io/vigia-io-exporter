@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"database/sql"
@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/vigia-io/vigia-exporter/cmd/exporter-mysql/scripts"
-	"github.com/vigia-io/vigia-exporter/internal/data"
+	"github.com/vigia-io/vigia-io-exporter/cmd/exporter-mysql/scripts"
+	"github.com/vigia-io/vigia-io-exporter/internal/data"
 
 	_ "github.com/go-sql-driver/mysql"
 )

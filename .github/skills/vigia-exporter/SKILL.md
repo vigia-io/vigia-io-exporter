@@ -1,13 +1,13 @@
 ---
-name: vigia-exporter
+name: vigia-io-exporter
 description: |
-  Use esta skill para implementar ou estender o vigia-exporter (CLI Go público).
+  Use esta skill para implementar ou estender o vigia-io-exporter (CLI Go público).
   Acione para: novos providers SGBD, formato snapshot.json, codegen de scripts,
   flags não-interativas, cross-compile e migração do legado DbaMonitor.
 metadata:
   author: Vigia
   version: "0.1.0"
-  repository: vigia-exporter
+  repository: vigia-io-exporter
   visibility: public
 ---
 
@@ -15,9 +15,9 @@ metadata:
 
 ## Visão geral
 
-O **vigia-exporter** é o componente de coleta pública do Vigia (licença source-available — não MIT). Binário CLI read-only que produz `snapshot.json` para a plataforma Vigia.
+O **vigia-io-exporter** é o componente de coleta pública do Vigia (licença source-available — não MIT). Binário CLI read-only que produz `snapshot.json` para a plataforma Vigia.
 
-Repositório público: [`github.com/vigia-io/vigia-exporter`](https://github.com/vigia-io/vigia-exporter). Licença: **Vigia Source Available v1.0** (ADR-0008). Uso em produção requer conta Vigia.
+Repositório público: [`github.com/vigia-io/vigia-io-exporter`](https://github.com/vigia-io/vigia-io-exporter). Licença: **Vigia Source Available v1.0** (ADR-0008). Uso em produção requer conta Vigia.
 
 ## Capacidades
 
@@ -29,8 +29,8 @@ Repositório público: [`github.com/vigia-io/vigia-exporter`](https://github.com
 ## Pré-requisitos
 
 - Go 1.22+
-- Acesso ao repo `vigia-scripts` para codegen (build time)
-- Schema em `vigia-spec/schemas/snapshot-v1.json`
+- Acesso ao repo `vigia-io-scripts` para codegen (build time)
+- Schema em `vigia-io-platform/docs/schemas/snapshot-v1.json`
 
 ## Quick Start
 
@@ -49,8 +49,8 @@ Repositório público: [`github.com/vigia-io/vigia-exporter`](https://github.com
 1. Identifique se a tarefa é novo provider, métrica ou formato de saída.
 2. Consulte ADR-0003 (offline-first), ADR-0006 (snapshot schema) e ADR-0008 (licença).
 3. Use **apenas** padrões das referências — não invente campos no snapshot.
-4. Scripts SQL vêm de `vigia-scripts` — exporter só embute, não edita SQL inline.
-5. Mantenha módulo Go como `github.com/vigia-io/vigia-exporter`.
+4. Scripts SQL vêm de `vigia-io-scripts` — exporter só embute, não edita SQL inline.
+5. Mantenha módulo Go como `github.com/vigia-io/vigia-io-exporter`.
 
 ## Regras
 

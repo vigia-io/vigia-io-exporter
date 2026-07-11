@@ -2,11 +2,11 @@
 
 [![License: Vigia Source Available](https://img.shields.io/badge/License-Vigia%20Source-teal.svg)](LICENSE)
 
-**Coleta offline do [Vigia](https://github.com/vigia-io/vigia-spec)** — observabilidade para bancos relacionais.
+**Coleta offline do [Vigia](https://github.com/vigia-io/vigia-io-platform)** — observabilidade para bancos relacionais.
 
 CLI em Go que conecta em SQL Server, MySQL, Azure SQL (e em breve PostgreSQL e Oracle), executa scripts read-only e gera `snapshot.json` para ingest na **plataforma Vigia**.
 
-> Repositório **público** para auditoria do código — **não** é software livre (MIT). Uso em produção requer [conta Vigia](https://getvigia.com) ou licença comercial. Ver [LICENSE](./LICENSE) e [resumo em PT](https://github.com/vigia-io/vigia-spec/blob/main/docs/legal/exporter-license.md).
+> Repositório **público** para auditoria do código — **não** é software livre (MIT). Uso em produção requer [conta Vigia](https://getvigia.com) ou licença comercial. Ver [LICENSE](./LICENSE) e [resumo em PT](./docs/legal/exporter-license.md).
 
 ---
 
@@ -14,11 +14,10 @@ CLI em Go que conecta em SQL Server, MySQL, Azure SQL (e em breve PostgreSQL e O
 
 | Repositório | Visibilidade | Função |
 |-------------|--------------|--------|
-| **vigia-exporter** (este) | Público (source-available) | Coleta offline |
-| [vigia-spec](https://github.com/vigia-io/vigia-spec) | Privado | Spec, schemas, ADRs |
-| vigia-platform | Privado | API SaaS, alertas, billing |
-| vigia-console | Privado | Dashboard |
-| vigia-scripts | Privado | Catálogo SQL |
+| **vigia-io-exporter** (este) | Público (source-available) | Coleta offline |
+| [vigia-io-platform](https://github.com/vigia-io/vigia-io-platform) | Privado | API SaaS, alertas, billing |
+| vigia-io-console | Privado (futuro) | Dashboard |
+| vigia-io-scripts | Privado (futuro) | Catálogo SQL |
 
 ---
 
@@ -48,7 +47,7 @@ export VIGIA_API_KEY=vigia_sk_live_...
 
 ## Saída
 
-`snapshot.json` conforme schema [vigia-spec/schemas/snapshot-v1.json](https://github.com/vigia-io/vigia-spec/blob/main/schemas/snapshot-v1.json).
+`snapshot.json` conforme schema v1.0.0 — contratos de ingest em [`vigia-io-platform/docs/schemas/`](https://github.com/vigia-io/vigia-io-platform/tree/main/docs/schemas).
 
 ---
 
