@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/vigia-io/vigia-exporter/internal/data"
+	"github.com/vigia-io/vigia-io-exporter/internal/data"
 
 	_ "github.com/microsoft/go-mssqldb"
 )

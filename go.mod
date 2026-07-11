@@ -1,4 +1,4 @@
-module github.com/vigia-io/vigia-exporter
+﻿module github.com/vigia-io/vigia-io-exporter
 
 go 1.22
 

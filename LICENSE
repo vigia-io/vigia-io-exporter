@@ -2,7 +2,7 @@ Vigia Source Available License v1.0
 
 Copyright (c) 2026 Samuel Fabel. All rights reserved.
 
-This license governs the vigia-exporter software and associated documentation
+This license governs the vigia-io-exporter software and associated documentation
 (the "Software"). By using, copying, or distributing the Software, you agree
 to these terms.
 
@@ -45,7 +45,7 @@ to these terms.
        authentication requirements intended to enforce Authorized Use;
 
    (d) sublicense, sell, or distribute the Software or derivatives except as
-       part of contributing back to the official vigia-exporter repository.
+       part of contributing back to the official vigia-io-exporter repository.
 
 4. Contributions
 
@@ -74,4 +74,4 @@ to these terms.
    legal@getvigia.com
 
 For a plain-language summary in Portuguese, see:
-https://github.com/vigia-io/vigia-spec/blob/main/docs/legal/exporter-license.md
+https://github.com/vigia-io/vigia-io-exporter/blob/main/docs/legal/exporter-license.md
