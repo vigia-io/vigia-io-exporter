@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "collector": {
+    "name": "vigia-exporter",
+    "version": "0.1.0",
+    "hostname": "bastion-01"
+  },
+  "target": {
+    "engine": "sqlserver",
+    "host_alias": "prod-erp",
+    "version": "Microsoft SQL Server 2019"
+  },
+  "collected_at": "2026-07-06T17:30:00Z",
+  "duration_ms": 1240,
+  "scripts": {
+    "sqlserver.health.version": [
+      {
+        "edition": "Enterprise",
+        "version": "15.0.2000"
+      }
+    ],
+    "sqlserver.sessions.blocking": [
+      {
+        "blocked_session_id": "52",
+        "blocking_session_id": "41",
+        "wait_type": "LCK_M_S"
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "id": "sqlserver.sessions.blocking",
+      "value": 2,
+      "unit": "count",
+      "severity": "critical"
+    },
+    {
+      "id": "sqlserver.storage.data_size",
+      "value": 131072,
+      "unit": "mb",
+      "severity": "ok"
+    }
+  ]
+}

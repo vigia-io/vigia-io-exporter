@@ -2,58 +2,57 @@ package data
 
 import (
 	"database/sql"
+	"fmt"
 )
 
-//GetData busca as informações no banco em questão
-func GetData(db *sql.DB, scripts map[string]string) (ret map[string][]map[string]interface{}, err error) {
+// GetData executa scripts read-only e retorna linhas por script_id.
+func GetData(db *sql.DB, scripts map[string]string) (map[string][]map[string]interface{}, error) {
+	ret := make(map[string][]map[string]interface{})
 
-	ret = make(map[string][]map[string]interface{})
-
-	for key, value := range scripts {
-		result := make([]map[string]interface{}, 0)
-
-		rows, err := db.Query(value)
-
+	for key, query := range scripts {
+		rows, err := db.Query(query)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("script %s: %w", key, err)
 		}
 
 		columns, err := rows.Columns()
-
 		if err != nil {
+			rows.Close()
 			return nil, err
 		}
 
-		defer rows.Close()
-
+		result := make([]map[string]interface{}, 0)
 		for rows.Next() {
-			vals := make([]interface{}, len(columns))
-			row := make(map[string]interface{})
-
-			for i, value := range columns {
-				vals[i] = new(sql.RawBytes)
-				row[value] = nil
+			scanDest := make([]interface{}, len(columns))
+			for i := range scanDest {
+				scanDest[i] = new(sql.NullString)
 			}
 
-			err = rows.Scan(vals...)
-
-			for i, value := range columns {
-				point := vals[i].(*sql.RawBytes)
-
-				row[value] = string(*point)
-
-				*point = nil
-			}
-
-			if err != nil {
+			if err := rows.Scan(scanDest...); err != nil {
+				rows.Close()
 				return nil, err
 			}
 
+			row := make(map[string]interface{}, len(columns))
+			for i, col := range columns {
+				ns := scanDest[i].(*sql.NullString)
+				if ns.Valid {
+					row[col] = ns.String
+				} else {
+					row[col] = nil
+				}
+			}
 			result = append(result, row)
 		}
+
+		if err := rows.Err(); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		rows.Close()
 
 		ret[key] = result
 	}
 
-	return
+	return ret, nil
 }
