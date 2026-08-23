@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spec.getvigia.com/schemas/snapshot-v1.json",
+  "title": "Vigia Snapshot",
+  "description": "Payload de coleta offline produzido pelo vigia-exporter",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "collector",
+    "target",
+    "collected_at",
+    "scripts",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Versão do schema — semver"
+    },
+    "collector": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["vigia-exporter", "vigia-agent"]
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+"
+        },
+        "hostname": {
+          "type": "string",
+          "description": "Host onde a coleta rodou (opcional)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "required": ["engine", "host_alias"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": [
+            "sqlserver",
+            "azuresql",
+            "mysql",
+            "mariadb",
+            "postgresql",
+            "oracle"
+          ]
+        },
+        "host_alias": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Identificador amigável — não enviar hostname real se política exigir"
+        },
+        "version": {
+          "type": "string",
+          "description": "Versão do engine detectada na coleta"
+        }
+      },
+      "additionalProperties": false
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC"
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tempo total de coleta"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "Mapa script_id → array de linhas (legado DbaMonitor)",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "description": "Métricas normalizadas para ingest em séries",
+      "items": {
+        "$ref": "#/$defs/metricPoint"
+      }
+    },
+    "signature": {
+      "type": "string",
+      "description": "HMAC-SHA256 opcional para integridade"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "metricPoint": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-z]+\\.[a-z0-9_]+$",
+          "description": "engine.category.metric"
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["count", "bytes", "mb", "percent", "ms", "ratio"]
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["ok", "info", "warning", "critical"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
