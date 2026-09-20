@@ -14,6 +14,14 @@ func TestProviderForEngine(t *testing.T) {
 	if provider.Engine() != "sqlserver" {
 		t.Fatalf("engine = %q", provider.Engine())
 	}
+
+	pg, err := ProviderForEngine("postgresql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pg.Engine() != "postgresql" {
+		t.Fatalf("engine = %q", pg.Engine())
+	}
 }
 
 func TestRunRequiresConnection(t *testing.T) {

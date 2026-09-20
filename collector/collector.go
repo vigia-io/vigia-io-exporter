@@ -62,6 +62,8 @@ func ProviderForEngine(engine string) (providers.Provider, error) {
 		return providers.MySQL{}, nil
 	case "azuresql":
 		return providers.AzureSQL{}, nil
+	case "postgresql", "postgres", "pg":
+		return providers.PostgreSQL{}, nil
 	default:
 		return nil, fmt.Errorf("engine não suportada: %s", engine)
 	}
