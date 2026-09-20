@@ -40,6 +40,17 @@ func TestForEngineFiltersByPrefix(t *testing.T) {
 	if _, ok := az["mysql.health.version"]; ok {
 		t.Fatal("mysql script leaked into azuresql filter")
 	}
+
+	pg := scripts.ForEngine("postgresql")
+	if _, ok := pg["postgresql.health.version"]; !ok {
+		t.Fatal("missing postgresql.health.version")
+	}
+	if _, ok := pg["postgresql.storage.database_size"]; !ok {
+		t.Fatal("missing postgresql.storage.database_size")
+	}
+	if _, ok := pg["mysql.health.version"]; ok {
+		t.Fatal("mysql script leaked into postgresql filter")
+	}
 }
 
 func TestCatalogIncludesTableRowCount(t *testing.T) {
@@ -47,6 +58,8 @@ func TestCatalogIncludesTableRowCount(t *testing.T) {
 	for _, id := range []string{
 		"sqlserver.storage.table_row_count",
 		"mysql.storage.table_row_count",
+		"postgresql.health.version",
+		"postgresql.storage.database_size",
 	} {
 		if _, ok := scripts.Scripts[id]; !ok {
 			t.Fatalf("missing embedded script %q", id)
