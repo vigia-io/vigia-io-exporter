@@ -71,7 +71,8 @@ func Run(opts Options) (int, error) {
 	}
 	defer db.Close()
 
-	rows, err := data.GetData(db, scripts.Scripts)
+	engineScripts := scripts.ForEngine(opts.Provider.Engine())
+	rows, err := data.GetData(db, engineScripts)
 	if err != nil {
 		return ExitScript, fmt.Errorf("falha ao executar scripts: %w", err)
 	}
@@ -93,9 +94,11 @@ func Run(opts Options) (int, error) {
 		}
 	}
 
+	metrics := MaterializeTableRowCounts(rows)
+
 	doc := snapshot.NewBuilder(opts.CollectorName, opts.Version, opts.Provider.Engine(), opts.HostAlias).
 		Scripts(rows).
-		Metrics([]snapshot.MetricPoint{}).
+		Metrics(metrics).
 		EngineVersion(engineVersion).
 		Build()
 

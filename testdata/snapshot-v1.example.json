@@ -25,6 +25,14 @@
         "blocking_session_id": "41",
         "wait_type": "LCK_M_S"
       }
+    ],
+    "sqlserver.storage.table_row_count": [
+      {
+        "database": "erp",
+        "schema": "dbo",
+        "table": "Orders",
+        "row_count": "1500"
+      }
     ]
   },
   "metrics": [
@@ -39,6 +47,16 @@
       "value": 131072,
       "unit": "mb",
       "severity": "ok"
+    },
+    {
+      "id": "sqlserver.storage.table_row_count",
+      "value": 1500,
+      "unit": "count",
+      "labels": {
+        "database": "erp",
+        "schema": "dbo",
+        "table": "Orders"
+      }
     }
   ]
 }
