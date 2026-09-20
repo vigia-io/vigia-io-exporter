@@ -1,5 +1,5 @@
 // Code synced from vigia-io-scripts (output/scripts.generated.go).
-// Source: PR #2 — includes *.storage.table_row_count (M2-01).
+// Source: M2-02 — adds postgresql.health.version + postgresql.storage.database_size.
 
 package scripts
 
@@ -16,6 +16,8 @@ var Scripts = map[string]string{
 	"mysql.sessions.locks":                "SELECT\n    ENGINE_LOCK_ID,\n    ENGINE_TRANSACTION_ID,\n    OBJECT_SCHEMA,\n    OBJECT_NAME,\n    LOCK_TYPE,\n    LOCK_MODE,\n    LOCK_STATUS\nFROM performance_schema.data_locks;",
 	"mysql.storage.database_size":         "SELECT\n    table_schema AS schema_name,\n    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS size_mb\nFROM information_schema.tables\nWHERE table_schema NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys')\nGROUP BY table_schema\nORDER BY size_mb DESC;",
 	"mysql.storage.table_row_count":       "SELECT\n    TABLE_SCHEMA AS `database`,\n    TABLE_SCHEMA AS `schema`,\n    TABLE_NAME AS `table`,\n    CAST(TABLE_ROWS AS SIGNED) AS row_count\nFROM information_schema.TABLES\nWHERE TABLE_TYPE = 'BASE TABLE'\n  AND TABLE_SCHEMA NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys')\nORDER BY row_count DESC;",
+	"postgresql.health.version":           "SELECT version() AS version_string;",
+	"postgresql.storage.database_size":    "SELECT\n    d.datname AS database_name,\n    ROUND(pg_database_size(d.oid) / 1024.0 / 1024.0, 2) AS size_mb\nFROM pg_database d\nWHERE NOT d.datistemplate\nORDER BY size_mb DESC;",
 	"sqlserver.config.max_memory":         "SELECT\n    CAST(value_in_use AS BIGINT) AS max_server_memory_mb,\n    CAST(value AS BIGINT) AS configured_max_server_memory_mb\nFROM sys.configurations\nWHERE name = 'max server memory (MB)';",
 	"sqlserver.health.uptime":             "SELECT\n    DATEDIFF(SECOND, sqlserver_start_time, GETUTCDATE()) AS uptime_seconds,\n    sqlserver_start_time AS start_time_utc\nFROM sys.dm_os_sys_info;",
 	"sqlserver.health.version":            "SELECT\n    CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(128)) AS product_version,\n    CAST(SERVERPROPERTY('ProductLevel') AS NVARCHAR(128)) AS product_level,\n    CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition,\n    CAST(@@VERSION AS NVARCHAR(4000)) AS version_string;",
