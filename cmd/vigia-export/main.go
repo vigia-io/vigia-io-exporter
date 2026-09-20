@@ -35,6 +35,7 @@ func newRootCmd() *cobra.Command {
 		newProviderCmd("sql", "alias de sqlserver", providers.SQLServer{}, false),
 		newProviderCmd("mysql", "MySQL / MariaDB", providers.MySQL{}, true),
 		newProviderCmd("azuresql", "Azure SQL Database", providers.AzureSQL{}, true),
+		newProviderCmd("postgresql", "PostgreSQL", providers.PostgreSQL{}, true),
 	)
 
 	root.Version = version
