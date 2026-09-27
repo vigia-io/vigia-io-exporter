@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "collector": {
+    "name": "vigia-exporter",
+    "version": "0.1.0",
+    "hostname": "bastion-01"
+  },
+  "target": {
+    "engine": "postgresql",
+    "host_alias": "analytics-pg",
+    "version": "PostgreSQL 16.1 on x86_64-pc-linux-gnu"
+  },
+  "collected_at": "2026-09-20T12:00:00Z",
+  "duration_ms": 890,
+  "scripts": {
+    "postgresql.health.version": [
+      {
+        "version_string": "PostgreSQL 16.1 on x86_64-pc-linux-gnu"
+      }
+    ],
+    "postgresql.storage.database_size": [
+      {
+        "database_name": "analytics",
+        "size_mb": "2048.50"
+      }
+    ],
+    "postgresql.sessions.active": [
+      {
+        "state": "active",
+        "session_count": "4"
+      },
+      {
+        "state": "idle",
+        "session_count": "12"
+      }
+    ],
+    "postgresql.sessions.blocking": [],
+    "postgresql.maintenance.replication": [
+      {
+        "application_name": "walreceiver",
+        "client_addr": "10.0.0.12",
+        "state": "streaming",
+        "sync_state": "async",
+        "replay_lag_seconds": "0"
+      }
+    ],
+    "postgresql.performance.bloat": [
+      {
+        "database": "analytics",
+        "schema": "public",
+        "table": "events",
+        "live_tuples": "10000",
+        "dead_tuples": "120",
+        "dead_tuple_pct": "1.20"
+      }
+    ],
+    "postgresql.storage.table_row_count": [
+      {
+        "database": "analytics",
+        "schema": "public",
+        "table": "events",
+        "row_count": "10000"
+      },
+      {
+        "database": "analytics",
+        "schema": "public",
+        "table": "users",
+        "row_count": "250"
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "id": "postgresql.sessions.active",
+      "value": 16,
+      "unit": "count",
+      "severity": "info"
+    },
+    {
+      "id": "postgresql.storage.database_size",
+      "value": 2048.5,
+      "unit": "mb",
+      "severity": "warning"
+    },
+    {
+      "id": "postgresql.maintenance.replication",
+      "value": 0,
+      "unit": "count",
+      "severity": "ok"
+    },
+    {
+      "id": "postgresql.performance.bloat",
+      "value": 1.2,
+      "unit": "percent",
+      "severity": "warning",
+      "labels": {
+        "database": "analytics",
+        "schema": "public",
+        "table": "events"
+      }
+    },
+    {
+      "id": "postgresql.storage.table_row_count",
+      "value": 10000,
+      "unit": "count",
+      "labels": {
+        "database": "analytics",
+        "schema": "public",
+        "table": "events"
+      }
+    },
+    {
+      "id": "postgresql.storage.table_row_count",
+      "value": 250,
+      "unit": "count",
+      "labels": {
+        "database": "analytics",
+        "schema": "public",
+        "table": "users"
+      }
+    }
+  ]
+}
