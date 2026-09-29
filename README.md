@@ -4,7 +4,7 @@
 
 **Coleta offline do [Vigia](https://github.com/vigia-io/vigia-io-spec)** — observabilidade para bancos relacionais.
 
-CLI `vigia-export` em Go: conecta em SQL Server, MySQL/MariaDB e Azure SQL, executa scripts read-only e gera `snapshot.json` (schema v1) para ingest na plataforma Vigia.
+CLI `vigia-export` em Go: conecta em SQL Server, MySQL/MariaDB, Azure SQL e PostgreSQL, executa scripts read-only e gera `snapshot.json` (schema v1) para ingest na plataforma Vigia.
 
 > Repositório **público** para auditoria — **não** é MIT. Uso em produção requer [conta Vigia](https://getvigia.com). Ver [LICENSE](./LICENSE).
 
@@ -32,6 +32,23 @@ vigia-export mysql
 | `vigia-export sqlserver` ou `sql` | SQL Server on-prem |
 | `vigia-export mysql` | MySQL / MariaDB |
 | `vigia-export azuresql` | Azure SQL |
+| `vigia-export postgresql` | PostgreSQL |
+
+#### PostgreSQL (`vigia-export postgresql`)
+
+Métricas embutidas (M2-02):
+
+| ID | Fonte |
+|----|--------|
+| `postgresql.health.version` | `version()` |
+| `postgresql.storage.database_size` | `pg_database_size` |
+| `postgresql.sessions.active` | `pg_stat_activity` |
+| `postgresql.sessions.blocking` | `pg_blocking_pids` |
+| `postgresql.maintenance.replication` | `pg_stat_replication` |
+| `postgresql.performance.bloat` | dead/live tuples (`pg_stat_user_tables`) |
+| `postgresql.storage.table_row_count` | `pg_stat_user_tables` (labels `database`/`schema`/`table`) |
+
+Fixture de exemplo: [`testdata/snapshot-postgresql-v1.example.json`](./testdata/snapshot-postgresql-v1.example.json).
 
 ### Flags e variáveis
 

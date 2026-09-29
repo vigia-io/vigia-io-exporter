@@ -67,6 +67,53 @@ func TestMaterializeTableRowCountsMySQL(t *testing.T) {
 	}
 }
 
+func TestMaterializeTableRowCountsPostgreSQL(t *testing.T) {
+	rows := map[string][]map[string]interface{}{
+		"postgresql.health.version": {
+			{"version_string": "PostgreSQL 16.1"},
+		},
+		"postgresql.storage.table_row_count": {
+			{"database": "analytics", "schema": "public", "table": "events", "row_count": "10000"},
+			{"database": "analytics", "schema": "public", "table": "users", "row_count": "250"},
+			{"database": "analytics", "schema": "reporting", "table": "daily_stats", "row_count": "365"},
+		},
+	}
+
+	points := export.MaterializeTableRowCounts(rows)
+	if len(points) != 3 {
+		t.Fatalf("got %d points, want 3", len(points))
+	}
+
+	byTable := map[string]float64{}
+	for _, p := range points {
+		if p.ID != "postgresql.storage.table_row_count" {
+			t.Fatalf("unexpected id %q", p.ID)
+		}
+		if p.Unit != "count" {
+			t.Fatalf("unit: got %q want count", p.Unit)
+		}
+		if p.Labels["database"] != "analytics" {
+			t.Fatalf("database label: %+v", p.Labels)
+		}
+		if p.Labels["schema"] == "" || p.Labels["table"] == "" {
+			t.Fatalf("missing schema/table labels: %+v", p.Labels)
+		}
+		byTable[p.Labels["schema"]+"."+p.Labels["table"]] = p.Value
+	}
+
+	want := map[string]float64{
+		"public.events":         10000,
+		"public.users":          250,
+		"reporting.daily_stats": 365,
+	}
+	for key, val := range want {
+		if byTable[key] != val {
+			t.Fatalf("%s: got %v want %v", key, byTable[key], val)
+		}
+	}
+}
+
+
 func TestMaterializeTableRowCountsSkipsMissingValue(t *testing.T) {
 	rows := map[string][]map[string]interface{}{
 		"sqlserver.storage.table_row_count": {

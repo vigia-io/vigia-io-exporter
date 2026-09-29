@@ -1,5 +1,5 @@
-// Code synced from vigia-io-scripts (output/scripts.generated.go).
-// Source: M2-02 — adds postgresql.health.version + postgresql.storage.database_size.
+// Code synced from vigia-io-scripts (output/scripts.generated.go) where available.
+// M2-02: PostgreSQL core metrics hardcoded until scripts catalog PR merges the rest.
 
 package scripts
 
@@ -17,7 +17,12 @@ var Scripts = map[string]string{
 	"mysql.storage.database_size":         "SELECT\n    table_schema AS schema_name,\n    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS size_mb\nFROM information_schema.tables\nWHERE table_schema NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys')\nGROUP BY table_schema\nORDER BY size_mb DESC;",
 	"mysql.storage.table_row_count":       "SELECT\n    TABLE_SCHEMA AS `database`,\n    TABLE_SCHEMA AS `schema`,\n    TABLE_NAME AS `table`,\n    CAST(TABLE_ROWS AS SIGNED) AS row_count\nFROM information_schema.TABLES\nWHERE TABLE_TYPE = 'BASE TABLE'\n  AND TABLE_SCHEMA NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys')\nORDER BY row_count DESC;",
 	"postgresql.health.version":           "SELECT version() AS version_string;",
+	"postgresql.maintenance.replication":  "SELECT\n    application_name,\n    client_addr::text AS client_addr,\n    state,\n    sync_state,\n    EXTRACT(EPOCH FROM replay_lag)::bigint AS replay_lag_seconds\nFROM pg_stat_replication;",
+	"postgresql.performance.bloat":        "SELECT\n    current_database() AS database,\n    schemaname AS schema,\n    relname AS \"table\",\n    n_live_tup AS live_tuples,\n    n_dead_tup AS dead_tuples,\n    CASE\n        WHEN n_live_tup > 0 THEN ROUND(100.0 * n_dead_tup / n_live_tup, 2)\n        ELSE 0\n    END AS dead_tuple_pct\nFROM pg_stat_user_tables\nWHERE n_live_tup + n_dead_tup > 0\nORDER BY dead_tuple_pct DESC;",
+	"postgresql.sessions.active":          "SELECT\n    COALESCE(state, 'unknown') AS state,\n    COUNT(*) AS session_count\nFROM pg_stat_activity\nWHERE backend_type = 'client backend'\nGROUP BY state\nORDER BY session_count DESC;",
+	"postgresql.sessions.blocking":        "SELECT\n    blocked.pid AS blocked_pid,\n    blocker.pid AS blocker_pid,\n    blocked.wait_event_type,\n    blocked.wait_event,\n    EXTRACT(EPOCH FROM (now() - blocked.state_change))::bigint AS wait_time_seconds\nFROM pg_stat_activity AS blocked\nINNER JOIN pg_stat_activity AS blocker\n    ON blocker.pid = ANY (pg_blocking_pids(blocked.pid))\nWHERE cardinality(pg_blocking_pids(blocked.pid)) > 0;",
 	"postgresql.storage.database_size":    "SELECT\n    d.datname AS database_name,\n    ROUND(pg_database_size(d.oid) / 1024.0 / 1024.0, 2) AS size_mb\nFROM pg_database d\nWHERE NOT d.datistemplate\nORDER BY size_mb DESC;",
+	"postgresql.storage.table_row_count":  "SELECT\n    current_database() AS database,\n    schemaname AS schema,\n    relname AS \"table\",\n    COALESCE(n_live_tup, 0)::bigint AS row_count\nFROM pg_stat_user_tables\nORDER BY row_count DESC;",
 	"sqlserver.config.max_memory":         "SELECT\n    CAST(value_in_use AS BIGINT) AS max_server_memory_mb,\n    CAST(value AS BIGINT) AS configured_max_server_memory_mb\nFROM sys.configurations\nWHERE name = 'max server memory (MB)';",
 	"sqlserver.health.uptime":             "SELECT\n    DATEDIFF(SECOND, sqlserver_start_time, GETUTCDATE()) AS uptime_seconds,\n    sqlserver_start_time AS start_time_utc\nFROM sys.dm_os_sys_info;",
 	"sqlserver.health.version":            "SELECT\n    CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(128)) AS product_version,\n    CAST(SERVERPROPERTY('ProductLevel') AS NVARCHAR(128)) AS product_level,\n    CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition,\n    CAST(@@VERSION AS NVARCHAR(4000)) AS version_string;",

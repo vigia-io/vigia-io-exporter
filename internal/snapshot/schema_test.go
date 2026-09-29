@@ -62,6 +62,15 @@ func TestGeneratedSnapshotMatchesSchema(t *testing.T) {
 }
 
 func TestExampleFixtureMatchesSchema(t *testing.T) {
+	validateFixture(t, "snapshot-v1.example.json")
+}
+
+func TestPostgreSQLFixtureMatchesSchema(t *testing.T) {
+	validateFixture(t, "snapshot-postgresql-v1.example.json")
+}
+
+func validateFixture(t *testing.T, fixtureName string) {
+	t.Helper()
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
 		t.Fatal("runtime.Caller failed")
@@ -76,7 +85,7 @@ func TestExampleFixtureMatchesSchema(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	exampleBytes, err := os.ReadFile(filepath.Join(root, "testdata", "snapshot-v1.example.json"))
+	exampleBytes, err := os.ReadFile(filepath.Join(root, "testdata", fixtureName))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,6 +104,6 @@ func TestExampleFixtureMatchesSchema(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := compiled.Validate(example); err != nil {
-		t.Fatalf("example fixture invalid: %v", err)
+		t.Fatalf("%s invalid: %v", fixtureName, err)
 	}
 }
